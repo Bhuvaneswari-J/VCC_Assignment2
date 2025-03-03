@@ -1,1 +1,51 @@
+#!/bin/bash
 
+# Update package list
+
+sudo apt update -y
+
+# Install Apache2
+
+sudo apt install apache2 -y
+
+# Start Apache2 service
+
+sudo systemctl start apache2
+
+# Enable Apache2 to start on boot
+
+sudo systemctl enable apache2
+
+# Get the private IP address
+
+PRIVATE_IP=$(hostname -I | awk '{print $1}')
+
+# Get the public IP address (if available)
+
+PUBLIC_IP=$(curl -s ifconfig.me || echo "Not Available")
+
+# Create a simple webpage displaying the IP addresses
+
+cat <<EOF | sudo tee /var/www/html/index.html
+
+<html>
+
+<head>
+
+    <title>GCP VM IP Addresses</title>
+
+</head>
+
+<body>
+
+    <h1>GCP VM IP Addresses</h1>
+
+    <p><strong>Private IP:</strong> $PRIVATE_IP</p>
+
+    <p><strong>Public IP:</strong> $PUBLIC_IP</p>
+
+</body>
+
+</html>
+
+EOF
